@@ -1,18 +1,18 @@
-import React from 'react'
-import * as C from './styles'
+import React from "react";
+import * as C from "./styles"; //importando os componentes do arquivo 'styles'
 
-
-
-const index = ({ title, Icon, value }) => {
+//Estrutura do ResumeItem (Recebendo os parâmetros informados no Resume)
+//Declarando o título dos cards, valor atual e o Icone representando a operação
+const ResumeItem = ({ title, Icon, value }) => {
   return (
-   <C.Container>
+    <C.Container>
       <C.Header>
-         <C.HeaderTitle>{title}</C.HeaderTitle>
-         <Icon />  
+        <C.HeaderTitle>{title}</C.HeaderTitle>
+        <Icon />
       </C.Header>
-        <C.Total>{value}</C.Total>  
-   </C.Container>
-  )
-}
+      <C.Total>{value}</C.Total>
+    </C.Container>
+  );
+};
 
-export default index
+export default ResumeItem;
