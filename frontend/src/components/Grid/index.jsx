@@ -19,7 +19,8 @@ const Grid = ({ itens, setItens }) => {
           <C.Th width={10} alignCenter>
             Tipo
           </C.Th>
-          <C.Th width={10}></C.Th>
+          <C.Th width={10}>Editar</C.Th>
+          <C.Th width={10}>Excluir</C.Th>
         </C.Tr>
       </C.Thead>
       <C.Tbody>
