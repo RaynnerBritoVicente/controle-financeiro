@@ -2,95 +2,75 @@ import React, { useState } from "react";
 import Grid from "../Grid";
 import * as C from "./styles";
 
-const Form = ({ handleAdd, transactionsList, setTransactionsList }) => {
-  const [desc, setDesc] = useState(""); //declarando 'desc' para descrição da transação
-  const [amount, setAmount] = useState(""); //declarando 'amount' para o valor da transação
-  const [isExpense, setExpense] = useState(false); //declarando 'isExpense' para definir se é entrada ou saída
-  const [date, setDate] = useState(null);
+const Form = () => {
+  const [descricao, setDescricao] = useState(""); //declarando 'descricao' para descrição da transação
+  const [valor, setValor] = useState(""); //declarando 'valor' para o valor da transação
+  const [tipo, setTipo] = useState(false); //declarando 'tipo' para definir se é entrada(false) ou saída(true)
 
-  const generateID = () => Math.round(Math.random() * 1000); //Função para gerar um id ao lançar uma transação
+  const onSubmitForm = async (e) => {
+    e.preventDefault(); //Previne a página de recarregar após um submit
 
-  function handleDateUpdate(e) {
-    const dateValue = e.target.value;
+    const data_transacao = document.getElementById("data").value; //obtem o valor da data!
 
-    const [ano, mes, dia] = dateValue.split("-");
+    try {
+      const body = { descricao, valor, tipo, data_transacao };
+      const response = await fetch("http://localhost:5000/transac", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify(body)
+      });
 
-    const formatedDate = `${dia}-${mes}-${ano}`;
-
-    setDate(formatedDate);
-  }
-
-  //Função para realizar o lançamento da transação
-  const handleSave = () => {
-    if (!desc || !amount) { //Verifica se a descrição ou valor foram informados
-      alert("Informe a descrição e o valor!");
-      return;
-    } else if (amount < 1) { //verifica se o valor informado é positivo
-      alert("O valor deve ser positivo!");
-      return;
+      window.location = "/";
+    } catch (err) {
+      console.error(err.message);
     }
-
-    //criando o item da transação
-    const transaction = {
-      id: generateID(),
-      desc: desc,
-      amount: amount,
-      expense: isExpense,
-      date: date,
-    };
-
-    //utiliza a função para armazenar o item criado
-    handleAdd(transaction);
-
-    //limpa as caixas de input
-    setDesc("");
-    setAmount("");
-  };
-
+  }
 
   //estrutura do Form
   return (
     <>
-      <C.Container>
-        <C.InputContent>
-          <C.Label>Descrição</C.Label>
-          <C.Input value={desc} onChange={(e) => setDesc(e.target.value)} />
-        </C.InputContent>
-        <C.InputContent>
-          <C.Label>Valor</C.Label>
-          <C.Input
-            value={amount}
-            type="number"
-            onChange={(e) => setAmount(e.target.value)}
-          />
-        </C.InputContent>
-        <C.InputContent>
-          <C.Label>Data da Operação</C.Label>
-          <C.Input
-            type="date"
-            onChange={(e) => handleDateUpdate(e)}
-          />
-        </C.InputContent>
-        <C.RadioGroup>
-          <C.Input
-            type="radio"
-            id="rIncome"
-            defaultChecked
-            name="group1"
-            onChange={() => setExpense(!isExpense)}
-          />
-          <C.Label htmlFor="rIncome">Entrada</C.Label>
-          <C.Input
-            type="radio"
-            id="rExpenses"
-            name="group1"
-            onChange={() => setExpense(!isExpense)}
-          />
-          <C.Label htmlFor="rExpenses">Saída</C.Label>
-        </C.RadioGroup>
-        <C.Button onClick={handleSave}>Adicionar</C.Button>
-      </C.Container>
-      <Grid itens={transactionsList} setItens={setTransactionsList} />
+      <form onSubmit={onSubmitForm}>
+        <C.Container>
+          <C.InputContent>
+            <C.Label>Descrição</C.Label>
+            <C.Input value={descricao} onChange={(e) => setDescricao(e.target.value)} />
+          </C.InputContent>
+          <C.InputContent>
+            <C.Label>Valor</C.Label>
+            <C.Input
+              value={valor}
+              type="number"
+              onChange={(e) => setValor(e.target.value)}
+            />
+          </C.InputContent>
+          <C.InputContent>
+            <C.Label>Data da Operação</C.Label>
+            <C.Input
+              type="date"
+              id="data"
+            />
+          </C.InputContent>
+          <C.RadioGroup>
+            <C.Input
+              type="radio"
+              id="rIncome"
+              defaultChecked
+              name="group1"
+              onChange={() => setTipo(!tipo)}
+            />
+            <C.Label htmlFor="rIncome">Entrada</C.Label>
+            <C.Input
+              type="radio"
+              id="rExpenses"
+              name="group1"
+              onChange={() => setTipo(!tipo)}
+            />
+            <C.Label htmlFor="rExpenses">Saída</C.Label>
+          </C.RadioGroup>
+          <C.Button type="submit" value="Adicionar" />
+        </C.Container>
+        <Grid/>
+      </form>
     </>
   );
 };

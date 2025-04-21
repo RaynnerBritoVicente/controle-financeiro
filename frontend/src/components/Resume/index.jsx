@@ -9,18 +9,18 @@ import {
 
 // Estrutura do Resume recebendo os parametros do arquivo 'App'
 //Componentes recebendo as informações: title, icon e value que serão utilizadas no componente 'Resumeitem'
-const Resume = ({ income, expense, total }) => {
+const Resume = ({ entradas, saidas, total }) => {
   return (
     <C.Container>
       <ResumeItem
         title="Entradas"
         Icon={FaRegArrowAltCircleUp}
-        value={income}
+        value={entradas}
       />
       <ResumeItem
         title="Saídas"
         Icon={FaRegArrowAltCircleDown}
-        value={expense}
+        value={saidas}
       />
       <ResumeItem title="Total" Icon={FaDollarSign} value={total} />
     </C.Container>

@@ -5,56 +5,56 @@ import Resume from "./components/Resume";
 import Form from "./components/Form";
 
 const App = () => {
-  const data = localStorage.getItem("transactions"); //Obtendo o item 'transactions' do armazenamento
-  const [transactionsList, setTransactionsList] = useState(
-    data ? JSON.parse(data) : []
-  ); // declarando e incluindo os dados obtidos na 'transactionsList'
-  const [income, setIncome] = useState(0); // declarando o income(entradas)
-  const [expense, setExpense] = useState(0); // declarando o expense(saídas/despesas)
-  const [total, setTotal] = useState(0); // declarando o Total
 
-  //UseEffect com dependência na lista de transações
-  useEffect(() => {
-    // função para filtrar e somar o valor das saídas/despesas lançadas.
-    const amountExpense = transactionsList
-      .filter((item) => item.expense)
-      .map((transaction) => Number(transaction.amount));
-    
-    // função para filtrar e somar o valor das Entradas lançadas.
-    const amountIncome = transactionsList
-      .filter((item) => !item.expense)
-      .map((transaction) => Number(transaction.amount));
+  const [transacoes, setTransacoes] = useState([]);
+  const [entradas, setEntradas] = useState("");
+  const [saidas, setSaidas] = useState("");
+  const [total, setTotal] = useState("");
 
-    const expense = amountExpense.reduce((acc, cur) => acc + cur, 0).toFixed(2); //Soma todas as Saídas/Despesas
-    const income = amountIncome.reduce((acc, cur) => acc + cur, 0).toFixed(2); //Soma todas as Entradas
+  //função de busca das transações
+  const buscaTransacoes = async () => {
+    try {
 
-    const total = Math.abs(income - expense).toFixed(2); //Calcula o Total
+      const response = await fetch("http://localhost:5000/transac");
+      const jsonData = await response.json();
 
-    setIncome(`R$ ${income}`); //Define o total de Entradas
-    setExpense(`R$ ${expense}`); //Define o total de Saídas/Despesas
-    setTotal(`${Number(income) < Number(expense) ? "-" : ""}R$ ${total}`); //Define o saldo total
-  }, [transactionsList]);
-
-  //Função para lidar com as novas adições a lista de transações
-  const handleAdd = (transaction) => {
-    const newArrayTransactions = [...transactionsList, transaction];
-
-    setTransactionsList(newArrayTransactions);
-
-    localStorage.setItem("transactions", JSON.stringify(newArrayTransactions));
+      setTransacoes(jsonData);
+    } catch (err) {
+      console.error(err.mesage)
+    }
   };
+
+  useEffect(() => {
+    buscaTransacoes();
+      // função para filtrar e somar o valor das saídas/despesas lançadas.
+      const montanteSaida = transacoes
+        .filter((item) => item.tipo)
+        .map((transac) => Number(transac.valor));
+    
+      // função para filtrar e somar o valor das Entradas lançadas.
+      const montanteEntrada = transacoes
+        .filter((item) => !item.tipo)
+        .map((transac) => Number(transac.valor));
+
+      const expense = montanteSaida.reduce((acc, cur) => acc + cur, 0).toFixed(2); //Soma todas as Saídas/Despesas
+      const income = montanteEntrada.reduce((acc, cur) => acc + cur, 0).toFixed(2); //Soma todas as Entradas
+
+      const total = Math.abs(income - expense).toFixed(2); //Calcula o Total
+
+      setEntradas(`R$ ${income}`); //Define o total de Entradas
+      setSaidas(`R$ ${expense}`); //Define o total de Saídas/Despesas
+      setTotal(`${Number(income) < Number(expense) ? "-" : ""}R$ ${total}`); //Define o saldo total
+    });
 
   //Estrutura principal
   return (
     <>
-      <Header />
-      <Form
-        handleAdd={handleAdd}
-        transactionsList={transactionsList}
-        setTransactionsList={setTransactionsList}
-      />
-      <Resume income={income} expense={expense} total={total} />
-      <GlobalStyle />
+      <div className="cointainer">
+        <Header />
+        <Resume entradas={entradas} saidas={saidas} total={total} /> { /*Informando os parametros de Entradas, Saidas e Total para o componente 'Resume'*/ } 
+        <Form />
+        <GlobalStyle />
+      </div>
     </>
   );
 };

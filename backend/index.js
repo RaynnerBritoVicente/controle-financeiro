@@ -29,7 +29,7 @@ app.post("/transac", async (req, res) => {
 app.get("/transac", async (req, res) => {
   try {
     const todasTransacoes = await pool.query(
-      "SELECT * FROM transacoes"
+      "SELECT id, descricao, valor, tipo, TO_CHAR(data_transacao, 'DD-MM-YYYY') AS data_formatada FROM transacoes;"
     );
     res.json(todasTransacoes.rows);
   } catch (err) {

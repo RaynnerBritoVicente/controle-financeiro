@@ -8,7 +8,6 @@ export const Container = styled.div`
   box-shadow: 0px 0px 5px #ccc;
   border-radius: 5px;
   display: flex;
-  margin-top: -50px;
   justify-content: space-around;
   padding: 15px 0px;
   gap: 10px;
@@ -45,7 +44,7 @@ export const RadioGroup = styled.div`
   }
 `;
 
-export const Button = styled.button`
+export const Button = styled.input`
   padding: 5px 10px;
   border: none;
   border-radius: 5px;
